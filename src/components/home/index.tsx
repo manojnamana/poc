@@ -3,14 +3,10 @@ import { SearchOutlined } from '@mui/icons-material'
 import { Box, IconButton, Typography } from '@mui/material'
 
 import { Stack } from '@mui/system'
-import { useRouter } from 'next/router'
-import { useState } from 'react'
 
 
 
 const Admin = () => {
-  const [query,setQuery] = useState('')
-  const router = useRouter()
   return (
     <Stack
       sx={{
@@ -30,11 +26,11 @@ const Admin = () => {
       
       <Stack direction='row' spacing={2} sx={{justifyContent:'center',alignItems:'center',mx:{md:'11%'},
         backgroundColor:'#f5f5f5',borderRadius: '50px',paddingRight:2,width:"200%",border:'2px solid #e0e0e0'}}> 
-      <input type="text"  placeholder="Search..." value={query} onChange={(e)=>setQuery(e.target.value)} 
+      <input type="text" placeholder="Search..." 
       style={{width: "100%",height:60,padding:10,border:'none',outline:'none',
       borderStartStartRadius:50,borderEndStartRadius:50,
       fontSize:18,paddingLeft:20}}/>
-      <IconButton sx={{":hover":{backgroundColor:'#f5f5f5'}}} disabled={!query} onClick={()=>router.push(`records`)}>
+      <IconButton sx={{":hover":{backgroundColor:'#f5f5f5'}}}>
       <SearchOutlined sx={{ color: 'text.secondary',fontSize:30}} />
       </IconButton>
         

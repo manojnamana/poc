@@ -155,6 +155,9 @@ const CollapsibleLibrary = () => {
       else if(getactive === '/profile/'){
         setActiveComponent('/profile/')
     }
+    else if(getactive === '/records/'){
+      setActiveComponent('/home/')
+  }
     }
 
     renderActiveComponent()
