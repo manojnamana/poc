@@ -152,6 +152,9 @@ const CollapsibleLibrary = () => {
         setActiveComponent('/takeinterview')
         console.log(true)
       }
+      else if(getactive === '/profile/'){
+        setActiveComponent('/profile/')
+    }
     }
 
     renderActiveComponent()
@@ -186,13 +189,19 @@ const CollapsibleLibrary = () => {
   }}
 >
   <Box>
-
+  <Typography  color='white' variant="h6" sx={{ p: 2 }}  fontWeight={"bold"} fontFamily={'initial'} ml={4}
+  >
+  TACSCAN
+  </Typography>
+<Divider />
     <List sx={{ px: 2 }}>
+
+
       <NavMenuItem
          icon={Circle}
         label={isSmallScreen ? 'Option 1' : ''}
-        // isActive={activeComponent === '/home'}
-        // onClick={() => {setActiveComponent('/home'),route.push('/home')}}
+        isActive={activeComponent === '/home'}
+        onClick={() => {setActiveComponent('/home'),route.push('/home')}}
       />
       <NavMenuItem
          icon={Circle}
@@ -242,6 +251,8 @@ const CollapsibleLibrary = () => {
       <NavMenuItem
         icon={AccountCircle}
         label={isSmallScreen ? 'Profile' : ''}
+        isActive={activeComponent === '/profile'}
+        onClick={()=>{setActiveComponent('/profile'),route.push('/profile')}}
       />
       <NavMenuItem
         icon={Logout}
@@ -251,12 +262,6 @@ const CollapsibleLibrary = () => {
     </List>
   </Box>
       </Drawer>
-
-
-      {/* <
->
-  {renderActiveComponent()}
-</> */}
 
       </Box>
     </ThemeProvider>
