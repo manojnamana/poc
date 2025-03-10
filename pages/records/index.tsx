@@ -1,6 +1,8 @@
-// @ts-nocheck
+//@ts-nocheck
 
-import { Data, OpportunitiesData } from '@/demo'
+
+import { OpportunitiesData } from '@/types/datatype'
+import { Data } from '@/utiles/data'
 import { Close, LocationOn, SearchOutlined } from '@mui/icons-material'
 import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, Paper, Skeleton, Stack, Typography, useMediaQuery, useTheme } from '@mui/material'
 import React, { useState } from 'react'
