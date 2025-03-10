@@ -23,8 +23,7 @@ const Admin = () => {
         textAlign: 'center',
         
       }}
-    >
-       
+    >  
       <Stack width={'100%'}>
         <Box sx={{width:'100%'}}>
         <Typography variant="h4" sx={{color:'#0a0a0a',mb:3,justifyContent:'center'}}>Latest Federal Contract Opportunities</Typography>
@@ -43,13 +42,7 @@ const Admin = () => {
        
         </Stack>
         </Box>
-      </Stack>
-     
-
-        
-
-        
-        
+      </Stack>   
     </Stack>
   )
 }
