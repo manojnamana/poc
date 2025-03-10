@@ -13,6 +13,7 @@ import {
   Paper,
 } from "@mui/material";
 import profile from '../../public/images/profile.jpeg'
+import { set } from "react-hook-form";
 
 
 const Account = () => {
@@ -30,13 +31,7 @@ const Account = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const[apiKey, setApiKey] = useState("");
   const [open,setOpen] = useState(false)
-  // localStorage.setItem("authInfo", JSON.stringify({
-  //   id: "USR001",
-  //   email: ""
-  // }));
-  // const authInfo = JSON.parse(localStorage.getItem("authInfo"));
-  // console.log(authInfo)
-
+ 
   // Fetch user details
   useEffect(() => {
     const fetchUserData = async () => {
@@ -78,30 +73,36 @@ const Account = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setUpdating(true);
-    setSuccessMessage("");
-    setErrorMessage("");
-    console.log(apiKey)
-    cookies.set("apiKey",apiKey);
-    setApiKey("")
-    try {
-      const response = await fetch(`/api/users/${authInfo.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(userData),
-      });
-
-      if (!response.ok) throw new Error("Failed to update account details");
-
-      const updatedData = await response.json();
-      updateAuthInfo(updatedData); // Update context
-      setSuccessMessage("Account details updated successfully!");
-    } catch (error) {
-      // setErrorMessage(error.message);
-      // setOpen(true)
-    } finally {
-      setUpdating(false);
+    // setUpdating(true);
+    // setSuccessMessage("");
+    // setErrorMessage("");
+   
+   
+     if(apiKey !== ""){
+      setSuccessMessage("API Key Set Successfully")
+      console.log(apiKey)
+      cookies.set("apiKey",apiKey);
+      setOpen(true)
+      // setApiKey("")
     }
+    // try {
+    //   const response = await fetch(`/api/users/${authInfo.id}`, {
+    //     method: "PUT",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify(userData),
+    //   });
+
+    //   if (!response.ok) throw new Error("Failed to update account details");
+
+    //   const updatedData = await response.json();
+    //   updateAuthInfo(updatedData); // Update context
+    //   setSuccessMessage("Account details updated successfully!");
+    // } catch (error) {
+    //   // setErrorMessage(error.message);
+    //   // setOpen(true)
+    // } finally {
+    //   setUpdating(false);
+    // }
   }
 
   if (loading) {
@@ -218,7 +219,7 @@ const Account = () => {
           </Snackbar>
           
           
-          <Snackbar
+          {/* <Snackbar
           open={open}
           autoHideDuration={6000}
           onClose={handleClose}
@@ -228,7 +229,7 @@ const Account = () => {
         >
           
           <Alert severity="error"  onClose={handleClose} sx={{mt:10}}>{errorMessage}</Alert>
-          </Snackbar>
+          </Snackbar> */}
     </Paper>
   );
 };

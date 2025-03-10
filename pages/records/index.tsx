@@ -4,16 +4,20 @@
 import { DataTy, OpportunitiesData } from '@/types/datatype'
 import { Data } from '@/utiles/data'
 import { Close, LocationOn, SearchOutlined } from '@mui/icons-material'
-import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, Paper, Skeleton, Stack, Typography, useMediaQuery, useTheme } from '@mui/material'
+import { Alert, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, Paper, Skeleton, Snackbar, Stack, Typography, useMediaQuery, useTheme } from '@mui/material'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { Sam } from '../api/samgov'
+import { set } from 'react-hook-form'
 
  const Contracts = () => {
   const [loading, setLoading] = useState(true)
   const [viewDetail, setViewDetail] = useState<OpportunitiesData|null>(null)
   const [data, setData] = useState<DataTy[]>([])
   const [modal, setModal] = useState(false)
+  const[refresh, setRefresh] = useState(false)
+  const [open, setOpen] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("");
   const [query2, setQuery2] = useState('')
   const router = useRouter()
   const query = router.query.oppurtunites
@@ -33,7 +37,9 @@ import { Sam } from '../api/samgov'
           } 
         }
         catch(error){
-          console.log(`error : ${error?.message}`)
+          console.log(`error : ${error?.response?.data?.error?.message}`)
+         setErrorMessage(error?.response?.data?.error?.message)
+         setOpen(true)
     }
     finally{
       setLoading(false)
@@ -41,7 +47,8 @@ import { Sam } from '../api/samgov'
   }
 
     fetchOpportunities()
-  }, [query,router.query.oppurtunites])
+  }, [query,refresh])
+
 
   
  const DeadLineDate = (text:string|null)=>{
@@ -69,7 +76,11 @@ const fullScreen = useMediaQuery(theme?.breakpoints.down('lg'));
 
 
 
-const handleClose = () => {
+const handleClose = (event,reason) => {
+  if (reason === 'clickaway') {
+    return;
+  }
+  setOpen(false)
   setModal(false);
 };
 
@@ -80,10 +91,10 @@ const handleClose = () => {
    {!loading && <Box display={"flex"} justifyContent={"flex-end"} alignItems={"center"}>
     <Stack direction='row' spacing={2} width={"50%"} sx={{alignItems:'center',
         backgroundColor:'#f5f5f5',paddingRight:2,border:'2px solid #e0e0e0',borderRadius: '10px'}}> 
-      <input type="text" placeholder="Search..."  value={query2} onChange={(e)=>setQuery2(e.target.value)}
+      <input type="text" placeholder="Search..."  value={query2} onChange={(e)=>(setQuery2(e.target.value))}
       style={{width: "100%",height:60,padding:10,border:'none',outline:'none',borderTopLeftRadius:10,borderBottomLeftRadius:10,
       fontSize:18,paddingLeft:20}}/>
-      <IconButton sx={{":hover":{backgroundColor:'#f5f5f5'}}} disabled={!query2} onClick={()=>router.push(`records/?oppurtunites=${query2}`)}>
+      <IconButton sx={{":hover":{backgroundColor:'#f5f5f5'}}} disabled={!query2} onClick={()=>(router.push(`records/?oppurtunites=${query2}`),setRefresh(!refresh))}>
       <SearchOutlined sx={{ color: 'text.secondary',fontSize:30}} />
       </IconButton>
         </Stack>
@@ -288,8 +299,24 @@ const handleClose = () => {
         </DialogActions> */}
       </Dialog>
 
+
+        <Snackbar
+          open={open}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          message="Note archived"
+          
+          
+        >
+          
+          <Alert severity="error"  onClose={handleClose} sx={{mt:10}}>{errorMessage}</Alert>
+          </Snackbar>
+
     </Stack>
   )
+
+
+  
 }
 
 
