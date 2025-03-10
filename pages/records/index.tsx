@@ -1,17 +1,47 @@
 //@ts-nocheck
 
 
-import { OpportunitiesData } from '@/types/datatype'
+import { DataTy, OpportunitiesData } from '@/types/datatype'
 import { Data } from '@/utiles/data'
 import { Close, LocationOn, SearchOutlined } from '@mui/icons-material'
 import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, Paper, Skeleton, Stack, Typography, useMediaQuery, useTheme } from '@mui/material'
-import React, { useState } from 'react'
+import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react'
+import { Sam } from '../api/samgov'
 
  const Contracts = () => {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [viewDetail, setViewDetail] = useState<OpportunitiesData|null>(null)
+  const [data, setData] = useState<DataTy[]>([])
   const [modal, setModal] = useState(false)
+  const [query2, setQuery2] = useState('')
+  const router = useRouter()
+  const query = router.query.oppurtunites
   const theme = useTheme()
+
+  useEffect(() => {
+    if(!query){
+      return
+    }
+    const fetchOpportunities = async () => {
+        try{
+          const res = await Sam(query as string)
+          if(res.status === 200){
+            console.log(res.data)
+          setData([res.data])
+
+          } 
+        }
+        catch(error){
+          console.log(`error : ${error?.message}`)
+    }
+    finally{
+      setLoading(false)
+    }
+  }
+
+    fetchOpportunities()
+  }, [query,router.query.oppurtunites])
 
   
  const DeadLineDate = (text:string|null)=>{
@@ -50,15 +80,12 @@ const handleClose = () => {
    {!loading && <Box display={"flex"} justifyContent={"flex-end"} alignItems={"center"}>
     <Stack direction='row' spacing={2} width={"50%"} sx={{alignItems:'center',
         backgroundColor:'#f5f5f5',paddingRight:2,border:'2px solid #e0e0e0',borderRadius: '10px'}}> 
-      <input type="text" placeholder="Search..." 
+      <input type="text" placeholder="Search..."  value={query2} onChange={(e)=>setQuery2(e.target.value)}
       style={{width: "100%",height:60,padding:10,border:'none',outline:'none',borderTopLeftRadius:10,borderBottomLeftRadius:10,
-      
       fontSize:18,paddingLeft:20}}/>
-      <IconButton sx={{":hover":{backgroundColor:'#f5f5f5'}}}>
+      <IconButton sx={{":hover":{backgroundColor:'#f5f5f5'}}} disabled={!query2} onClick={()=>router.push(`records/?oppurtunites=${query2}`)}>
       <SearchOutlined sx={{ color: 'text.secondary',fontSize:30}} />
       </IconButton>
-        
-       
         </Stack>
 
    </Box>
@@ -74,10 +101,8 @@ const handleClose = () => {
 
         
       )}
-      {!loading &&
-      
-       Data.map((item) =>
-      item.opportunitiesData.length > 0 ? 
+      {!loading && data.length <1 && (<Typography variant="h6" fontWeight={"bold"} textAlign={"center"} mt={2}>No Data Found</Typography>)}
+      {!loading && data?.map((item) =>
       item.opportunitiesData?.map((item, index) =>(
         <Paper elevation={3}  key={index} sx={{padding: 2,":hover":{backgroundColor:"whitesmoke"}}} >
             <Stack component={"button"} width={"100%"} onClick={()=>{
@@ -146,10 +171,10 @@ const handleClose = () => {
               <Typography fontSize={15} >
                 Posted : {item?.postedDate} 
               </Typography>
-              <Typography fontSize={15}>
+             {item?.responseDeadLine && <Typography fontSize={15}>
                 Deadline : {DeadLineDate(item?.responseDeadLine)} 
                 {/* Deadline : {item?.responseDeadLine} */}
-              </Typography>
+              </Typography>}
               
                {item?.active==="Yes" ? (<Chip label={item?.active==="Yes"?"Active":"In active"} sx={{bgcolor:'#57e45ca6',color:'whitesmoke'}} size='small' />)
                :
@@ -161,11 +186,11 @@ const handleClose = () => {
 
             </Stack>
         </Paper> ) 
-      ): <Typography textAlign={"center"} fontWeight={"Bold"}>No Data Found</Typography>
+      )
       )}
     </Stack>
 
-    <Dialog
+      <Dialog
         fullScreen={fullScreen}
         open={modal}
         fullWidth
@@ -198,7 +223,7 @@ const handleClose = () => {
                   <Typography variant="h6">Response Deadline</Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                  <Typography variant="h6">{DeadLineDate(viewDetail?.responseDeadLine)}</Typography>
+                 {viewDetail?.responseDeadLine ? <Typography variant="h6">{DeadLineDate(viewDetail?.responseDeadLine)}</Typography> : <Typography variant="h6">Not Provided</Typography>}
                   {/* <Typography variant="h6">{viewDetail?.responseDeadLine}</Typography> */}
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -245,7 +270,7 @@ const handleClose = () => {
                     <Typography variant="h6">Phone</Typography>
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <Typography variant="h6">{viewDetail?.pointOfContact[0]?.phone}</Typography>
+                  <Typography variant="h6">{viewDetail?.pointOfContact[0]?.phone?viewDetail?.pointOfContact[0]?.phone:"Not Provided"}</Typography>
               </Grid>
               </Grid>
             </Stack>

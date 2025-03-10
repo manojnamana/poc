@@ -35,7 +35,7 @@ const Admin = () => {
       style={{width: "100%",height:60,padding:10,border:'none',outline:'none',
       borderStartStartRadius:50,borderEndStartRadius:50,
       fontSize:18,paddingLeft:20}}/>
-      <IconButton sx={{":hover":{backgroundColor:'#f5f5f5'}}} disabled={!query} onClick={()=>router.push(`records`)}>
+      <IconButton sx={{":hover":{backgroundColor:'#f5f5f5'}}} disabled={!query} onClick={()=>router.push(`records/?oppurtunites=${query}`)}>
       <SearchOutlined sx={{ color: 'text.secondary',fontSize:30}} />
       </IconButton>
         
