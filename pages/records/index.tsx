@@ -12,8 +12,13 @@ import React, { useState } from 'react'
   const theme = useTheme()
 
  const DeadLineDate = (text:string|null)=>{
-    let datex = text.split('T')
+  let datex = text?.includes('T') && text?.split('T')
+  if(!datex){
+    return text
+  }else{
     return datex[0]
+  }
+    
  }
 //  const WrappedText = ({ text }: { text: string }) => {
 //   const words = text.split(" ");
@@ -140,6 +145,7 @@ const handleClose = () => {
               </Typography>
               <Typography fontSize={15}>
                 Deadline : {DeadLineDate(item?.responseDeadLine)} 
+                {/* Deadline : {item?.responseDeadLine} */}
               </Typography>
               
                {item?.active==="Yes" ? (<Chip label={item?.active==="Yes"?"Active":"In active"} sx={{bgcolor:'#57e45ca6',color:'whitesmoke'}} size='small' />)
@@ -190,6 +196,7 @@ const handleClose = () => {
               </Grid>
               <Grid item xs={12} sm={6}>
                   <Typography variant="h6">{DeadLineDate(viewDetail?.responseDeadLine)}</Typography>
+                  {/* <Typography variant="h6">{viewDetail?.responseDeadLine}</Typography> */}
               </Grid>
               <Grid item xs={12} sm={6}>
                   <Typography variant="h6">Response Posted</Typography>

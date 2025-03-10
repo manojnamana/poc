@@ -69,7 +69,7 @@ export interface OpportunitiesData {
     resourceLinks: string[] | null;
 }
 
-export interface Data {
+export interface DataTy {
     totalRecords: number;
     limit: number;
     offset: number;
@@ -78,7 +78,7 @@ export interface Data {
 }
 
 
-export const Data:Data[] = [
+export const Data:DataTy[] = [
 {
     "totalRecords": 10,
     "limit": 10,
