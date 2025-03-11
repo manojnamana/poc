@@ -15,6 +15,7 @@ export const Contracts = () => {
               </Typography>
 
             </Box>
+            
         </Paper>)
       )
       )}
