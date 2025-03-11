@@ -95,6 +95,13 @@ const CollapsibleLibrary = () => {
     
   },[getactive])
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCount((prevCount) => prevCount + 1);
+    }, 60000); // 10 seconds
+  
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, []);
 
 
 

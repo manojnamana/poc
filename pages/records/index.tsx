@@ -365,7 +365,7 @@ const handleClose = (event,reason) => {
       </Dialog>
 
 
-        <Snackbar
+        {/* <Snackbar
           open={open}
           autoHideDuration={6000}
           onClose={handleClose}
@@ -375,7 +375,7 @@ const handleClose = (event,reason) => {
         >
           
           <Alert severity="error"  onClose={handleClose} sx={{mt:10}}>{errorMessage}</Alert>
-          </Snackbar>
+          </Snackbar> */}
 
     </Stack>
   )
