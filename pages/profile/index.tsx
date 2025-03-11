@@ -11,9 +11,12 @@ import {
   Grid,
   Snackbar,
   Paper,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 import profile from '../../public/images/profile.jpeg'
 import { set } from "react-hook-form";
+import { Key } from "@mui/icons-material";
 
 
 const Account = () => {
@@ -29,8 +32,10 @@ const Account = () => {
   const [updating, setUpdating] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const[apiKey, setApiKey] = useState("");
+  const[apiKey, setApiKey] = useState(cookies.get("apiKey"));
+  const[apiKeyShow, setApiKeyShow] =useState(false)
   const [open,setOpen] = useState(false)
+  const [disabled,setDisabled] = useState(true)
  
   // Fetch user details
   useEffect(() => {
@@ -70,6 +75,19 @@ const Account = () => {
     setOpen(false)
   }
 
+
+  const handleApiKey = () =>{
+    setApiKeyShow(false)
+    setDisabled(!disabled)
+    if(apiKey !== ""){
+      setSuccessMessage("API Key Set Successfully")
+      console.log(apiKey)
+      cookies.set("apiKey",apiKey);
+      setOpen(true)
+      // setApiKey("")
+    }
+
+  }
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -78,13 +96,7 @@ const Account = () => {
     // setErrorMessage("");
    
    
-     if(apiKey !== ""){
-      setSuccessMessage("API Key Set Successfully")
-      console.log(apiKey)
-      cookies.set("apiKey",apiKey);
-      setOpen(true)
-      // setApiKey("")
-    }
+
     // try {
     //   const response = await fetch(`/api/users/${authInfo.id}`, {
     //     method: "PUT",
@@ -112,6 +124,12 @@ const Account = () => {
       </div>
     );
   }
+
+
+  const GetApikey = cookies.get("apiKey")
+  const maskedApikey = GetApikey?.length
+    ? `${GetApikey.slice(0, 2)}${"*".repeat(GetApikey.length - 8)}${GetApikey.slice(-2)}`
+    : "";
 
   return (
     <Paper elevation={3} sx={{mt:4,mx:4,p:3,borderRadius:6}}>
@@ -176,17 +194,7 @@ const Account = () => {
             />
             
 </Grid>
-            <Grid item xs={12} >
-            <TextField
-              label="Enter API Key"
-              name="Enter_API_Key"
-              value={apiKey}
-              onChange={(e)=>setApiKey(e.target.value)}
-              fullWidth
-              required
-            />
-            </Grid>
-           
+
             </Grid>
             <Stack mt={2} flexDirection={"row"} display={"flex"} justifyContent={"flex-end"} alignItems={"flex-end"} >
       <Button
@@ -203,7 +211,37 @@ const Account = () => {
 
       </Stack>
       
+      <Stack  sx={{p:3}}>
+            <TextField
+              label="Enter API Key"
+              name="Enter_API_Key"
+              value={apiKeyShow ? apiKey : maskedApikey
+
+              }  
+              onChange={(e)=>setApiKey(e.target.value)}
+              disabled={disabled}
+              required
+              disable slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={()=>setApiKeyShow(!apiKeyShow)}>
+                        <Key/>
+                      </IconButton>
+                      
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            
+            />
+            <Stack mt={2} flexDirection={"row"} display={"flex"} justifyContent={"flex-end"} alignItems={"flex-end"} >
+           {disabled ? <Button variant="contained" color="primary" onClick={()=>(setDisabled(false),setApiKeyShow(true))} sx={{mt:2}}>Edit API Key</Button>
+           : <Button variant="contained" color="primary" onClick={handleApiKey} sx={{mt:2}}>Save API Key</Button>}
+            </Stack>
+            </Stack>
       </Grid>
+
 
     </Grid>
 

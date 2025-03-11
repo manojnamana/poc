@@ -4,18 +4,19 @@
 import { DataTy, OpportunitiesData } from '@/types/datatype'
 import { Data } from '@/utiles/data'
 import { Close, LocationOn, SearchOutlined } from '@mui/icons-material'
-import { Alert, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, Paper, Skeleton, Snackbar, Stack, Typography, useMediaQuery, useTheme } from '@mui/material'
+import { Alert, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, Link, Paper, Skeleton, Snackbar, Stack, Typography, useMediaQuery, useTheme } from '@mui/material'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import { Sam } from '../api/samgov'
-import { set } from 'react-hook-form'
+import { AgencyByCode, DescriptionByNoticeId, Sam } from '../api/samgov'
 
  const Contracts = () => {
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [viewDetail, setViewDetail] = useState<OpportunitiesData|null>(null)
   const [data, setData] = useState<DataTy[]>([])
+  const [agencyName,setAgencyName] = useState("")
   const [modal, setModal] = useState(false)
   const[refresh, setRefresh] = useState(false)
+  const [agencyNameLoad,setAgencyNameLoad] =useState(false)
   const [open, setOpen] = useState(false)
   const [errorMessage, setErrorMessage] = useState("");
   const [query2, setQuery2] = useState('')
@@ -27,7 +28,9 @@ import { set } from 'react-hook-form'
     if(!query){
       return
     }
+    setLoading(true)
     const fetchOpportunities = async () => {
+      setLoading(true)
         try{
           const res = await Sam(query as string)
           if(res.status === 200){
@@ -49,6 +52,48 @@ import { set } from 'react-hook-form'
     fetchOpportunities()
   }, [query,refresh])
 
+  const fetchDescription = async(noticeId)=>{
+    try{
+      const res = await DescriptionByNoticeId(noticeId)
+      console.log(res.data)
+
+
+    }catch(err){
+      console.log(console.log(`error : ${err?.response?.data?.error?.message}`))
+
+    }
+  }
+
+  const fetchAgency = async(classficationCode)=>{
+    setAgencyNameLoad(true)
+    try{
+      const res = await AgencyByCode(classficationCode)
+      // console.log(res.data?.name)
+      if(res.status === 200){
+        setAgencyName(res?.data?.name)
+        setAgencyNameLoad(false)
+      }
+      
+
+
+    }catch(err){
+      console.log(console.log(`error : ${err?.response?.data?.error?.message}`))
+      console.log(err?.response?.status)
+      setAgencyName("None")
+    }finally{
+      setAgencyNameLoad(false)
+    }
+  }
+
+  const handleDialog = async(noticeId,classificationCode)=>{
+      setModal(true)
+      setAgencyNameLoad(true)
+      setAgencyName("")
+      await fetchDescription(noticeId)
+      await fetchAgency(classificationCode)
+      
+
+  }
 
   
  const DeadLineDate = (text:string|null)=>{
@@ -112,8 +157,10 @@ const handleClose = (event,reason) => {
 
         
       )}
-      {!loading && data.length <1 && (<Typography variant="h6" fontWeight={"bold"} textAlign={"center"} mt={2}>No Data Found</Typography>)}
-      {!loading && data?.map((item) =>
+      {!loading && Data.length <1 && (<Typography variant="h6" fontWeight={"bold"} textAlign={"center"} mt={2}>No Data Found</Typography>)}
+      {!loading && Data?.map((item) =>
+      item.opportunitiesData.length < 1 ? (<Typography variant="h6" fontWeight={"bold"} textAlign={"center"} mt={2}>No Data Found</Typography>)
+      :
       item.opportunitiesData?.map((item, index) =>(
         <Paper elevation={3}  key={index} sx={{padding: 2,":hover":{backgroundColor:"whitesmoke"}}} >
             <Stack component={"button"} width={"100%"} onClick={()=>{
@@ -151,7 +198,7 @@ const handleClose = (event,reason) => {
                 links: item?.links ?? [],
                 resourceLinks: item?.resourceLinks ?? null,
               })
-              ;setModal(true)}} bgcolor={"transparent"} border={0}>
+              ;handleDialog(item?.noticeId,item?.classificationCode)}} bgcolor={"transparent"} border={0}>
             <Box display={"flex"} flexDirection={"row"} alignItems={"center"} gap={2}>
               <Typography fontSize={15}>
               Solicitation Number : {item?.solicitationNumber}
@@ -224,6 +271,18 @@ const handleClose = (event,reason) => {
 
             <Stack gap={2} p={2}>
               <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                  <Typography variant="h6">Agency</Typography>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                {agencyNameLoad && <Skeleton animation="wave" variant='text' sx={{bgcolor:"lightgray"}}  width={250}/>}
+                 
+                
+                {!agencyNameLoad && agencyName!=="None" ?
+                <Link href={`/usaspendings?agency=${viewDetail?.classificationCode}`} underline='none' fontSize={20}>{agencyName}</Link>
+              :<Typography variant='h6'>{agencyName}</Typography>}
+                 
+              </Grid>
                 <Grid item xs={12} sm={6}>
                   <Typography variant="h6">Title</Typography>
               </Grid>
@@ -248,6 +307,12 @@ const handleClose = (event,reason) => {
               </Grid>
               <Grid item xs={12} sm={6}>
                   <Typography variant="h6">{viewDetail?.typeOfSetAsideDescription ? viewDetail?.typeOfSetAsideDescription : "Not Provided"}</Typography>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                  <Typography variant="h6">Naics</Typography>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                  <Typography variant="h6">{viewDetail?.naicsCode || "Not Provided"}</Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
                   <Typography variant="h6">Place of Performance</Typography>

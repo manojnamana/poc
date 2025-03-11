@@ -1,48 +1,30 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
+//@ts-nocheck
 import React, { useEffect, useState } from 'react';
 import {
   Box,
   Drawer,
-  IconButton,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
   Typography,
-  styled,
   useTheme,
   ThemeProvider,
   createTheme,
   CssBaseline,
   Divider,
-  Stack,
+
   useMediaQuery,
+  Badge,
 } from '@mui/material';
 import {
-  BookOpen,
-  FileAudio,
-  BrainCircuit,
-  MessageSquare,
+ 
   ChevronRight,
-  Menu,
-  X,
-  Calendar,
-  Settings,
-  Home,
-  Users,
-  GraduationCap,
-  Loader,
-  Handshake,
-  File,
-  User,
-  Users2,
-  BriefcaseBusiness,
+ 
 } from 'lucide-react';
-import { AccountCircle, Circle, Logout, People, Work } from '@mui/icons-material';
-import Admin from '@/pages/home';
-import Jobs from '@/pages/jobs';
+import { AccountCircle, AttachMoney, Circle, Logout, Notifications, People, Work } from '@mui/icons-material';
 import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
 
@@ -81,40 +63,11 @@ const darkTheme = createTheme({
 //   backgroundClip: 'text',
 // }));
 
-const NavMenuItem = ({ icon: Icon, label, isActive = false, onClick, hasSubitems = false }) => {
-  const theme = useTheme();
 
-  return (
-    <ListItemButton
-      onClick={onClick}
-      sx={{
-        borderRadius: 2,
-        mb: 1,
-        color: isActive ? 'primary.main' : 'text.secondary',
-        '&:hover': {
-          backgroundColor: 'action.hover',
-        },
-      }}
-    >
-      <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
-        <Icon size={5} />
-      </ListItemIcon>
-      <ListItemText primary={label} />
-      {hasSubitems && (
-        <ChevronRight
-          size={16}
-          style={{
-            transform: isActive ? 'rotate(90deg)' : 'none',
-            transition: theme.transitions.create('transform'),
-          }}
-        />
-      )}
-    </ListItemButton>
-  );
-};
 
 const CollapsibleLibrary = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const [count,setCount] = useState(2)
 
   const theme = useTheme()
   const isSmallScreen = useMediaQuery(theme.breakpoints.up('lg'));
@@ -127,42 +80,61 @@ const CollapsibleLibrary = () => {
 
   useEffect (()=>{
     const renderActiveComponent = () => {
-      if (getactive === '/jobs/create'){
-        setActiveComponent('/jobs')
-        console.log(true)
-      }
-      else if (getactive === '/jobs/matchprofile/[id]'){
-        setActiveComponent('/jobs')
-        console.log(true)
-      }
-      
-      else if (getactive === '/viewassessmentreport/[id]'){
-        setActiveComponent('/viewassessmentreport')
-        console.log(true)
-      }
-      else if (getactive === '/takeinterview/[id]'){
-        setActiveComponent('/takeinterview')
-        console.log(true)
-      }
-      else if (getactive === '/takeinterview/upload'){
-        setActiveComponent('/takeinterview')
-        console.log(true)
-      }
-      else if (getactive === '/takeinterview/'){
-        setActiveComponent('/takeinterview')
-        console.log(true)
-      }
-      else if(getactive === '/profile/'){
+
+       if(getactive === '/profile/?opputunity='){
         setActiveComponent('/profile/')
     }
     else if(getactive === '/records/'){
-      setActiveComponent('/home/')
+      setActiveComponent('/oppurtunities/')
   }
+
+
     }
 
     renderActiveComponent()
+    
   },[getactive])
 
+
+
+
+  const NavMenuItem = ({ icon: Icon, label, isActive = false, onClick, hasSubitems = false }) => {
+    const theme = useTheme();
+  
+    return (
+      <ListItemButton
+        onClick={onClick}
+        sx={{
+          borderRadius: 2,
+          mb: 1,
+          color: isActive ? 'primary.main' : 'text.secondary',
+          '&:hover': {
+            backgroundColor: 'action.hover',
+          },
+        }}
+      >
+        <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
+          {label === "Notifications" ? (
+            <Badge badgeContent={count} color="error">
+              <Icon fontSize="medium" />
+            </Badge>
+          ) : (
+            <Icon fontSize="medium" />
+          )}
+        </ListItemIcon>
+        <ListItemText primary={label} />
+        {hasSubitems && (
+          <ChevronRight
+            fontSize="small"
+            style={{
+              transform: isActive ? 'rotate(90deg)' : 'none',
+              transition: theme.transitions.create('transform'),
+            }}
+          />
+        )}
+      </ListItemButton>
+    );
+  };
 
 
 
@@ -201,22 +173,22 @@ const CollapsibleLibrary = () => {
 
 
       <NavMenuItem
-         icon={Circle}
-        label={isSmallScreen ? 'Option 1' : ''}
-        isActive={activeComponent === '/home'}
-        onClick={() => {setActiveComponent('/home'),route.push('/home')}}
+         icon={Work}
+        label={isSmallScreen ? 'Oppurtunities' : ''}
+        isActive={activeComponent === '/oppurtunities'}
+        onClick={() => {setActiveComponent('/oppurtunities'),route.push('/oppurtunities')}}
       />
       <NavMenuItem
-         icon={Circle}
-        label={isSmallScreen ? 'Option 2' : ''}
-        // isActive={activeComponent === '/home'}
-        // onClick={() => {setActiveComponent('/home'),route.push('/home')}}
+         icon={AttachMoney}
+        label={isSmallScreen ? 'USA Spendings' : ''}
+        isActive={activeComponent === '/usaspendings'}
+        onClick={() => {setActiveComponent('/usaspendings'),route.push('/usaspendings?agency=012')}}
       />
       <NavMenuItem
-         icon={Circle}
-        label={isSmallScreen ? 'Option 3' : ''}
-        // isActive={activeComponent === '/home'}
-        // onClick={() => {setActiveComponent('/home'),route.push('/home')}}
+         icon={Notifications}
+        label={isSmallScreen ? 'Notifications' : ''}
+        isActive={activeComponent === '/notifications'}
+        onClick={() => {setActiveComponent('/notifications'),route.push('/notifications')}}
       />
       
       {/* <NavMenuItem

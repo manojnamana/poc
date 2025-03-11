@@ -83,7 +83,7 @@ const LoginPage = () => {
       setMessage("Login Success");
       setOpen(true)
       // Cookies.set('access_token', response.access, { expires: 7 });
-      setTimeout(() => navigate.push("/home"), 100);
+      setTimeout(() => navigate.push("/oppurtunities"), 100);
     } catch (error) {
       setMessage("Check email and Password");
       setOpen(true)
