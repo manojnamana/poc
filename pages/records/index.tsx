@@ -157,8 +157,8 @@ const handleClose = (event,reason) => {
 
         
       )}
-      {!loading && Data.length <1 && (<Typography variant="h6" fontWeight={"bold"} textAlign={"center"} mt={2}>No Data Found</Typography>)}
-      {!loading && Data?.map((item) =>
+      {!loading && data.length <1 && (<Typography variant="h6" fontWeight={"bold"} textAlign={"center"} mt={2}>No Data Found</Typography>)}
+      {!loading && data?.map((item) =>
       item.opportunitiesData.length < 1 ? (<Typography variant="h6" fontWeight={"bold"} textAlign={"center"} mt={2}>No Data Found</Typography>)
       :
       item.opportunitiesData?.map((item, index) =>(
@@ -365,7 +365,7 @@ const handleClose = (event,reason) => {
       </Dialog>
 
 
-        {/* <Snackbar
+        <Snackbar
           open={open}
           autoHideDuration={6000}
           onClose={handleClose}
@@ -375,7 +375,7 @@ const handleClose = (event,reason) => {
         >
           
           <Alert severity="error"  onClose={handleClose} sx={{mt:10}}>{errorMessage}</Alert>
-          </Snackbar> */}
+          </Snackbar>
 
     </Stack>
   )
